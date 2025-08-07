@@ -1,0 +1,105 @@
+# Manual DEM Processing Guide for aoi_30km.tif
+
+## Step 1: Load Your DEM File
+
+1. Open QGIS (should already be running)
+2. Go to **Layer → Add Layer → Add Raster Layer** (or press `Ctrl+Shift+R`)
+3. Browse to: `C:\Users\nupur professional\Downloads\aoi_30km.tif`
+4. Click **Open**
+5. The DEM will appear as a grayscale image
+
+## Step 2: Style the DEM with Elevation Colors
+
+1. **Right-click** on the DEM layer in the Layers Panel
+2. Select **Properties**
+3. Go to the **Symbology** tab
+4. Change **Render type** from "Singleband gray" to **"Singleband pseudocolor"**
+5. In the **Color ramp** dropdown, select **"Elevation"** or **"Spectral"**
+6. Click **Classify** button
+7. Click **OK**
+
+Your DEM should now show elevation in colors (blue=low, green=medium, red/white=high)
+
+## Step 3: Create Hillshade Visualization
+
+1. Go to **Raster → Analysis → Hillshade**
+2. Set these parameters:
+   - **Input layer**: Your DEM (aoi_30km)
+   - **Z factor**: 1.0
+   - **Azimuth**: 315
+   - **Vertical angle**: 45
+   - **Output**: Save as `aoi_30km_hillshade.tif`
+3. Click **Run**
+
+## Step 4: Generate Contour Lines
+
+1. Go to **Raster → Extraction → Contour**
+2. Set parameters:
+   - **Input layer**: Your DEM
+   - **Interval between contour lines**: 50 (for 50-meter contours)
+   - **Output**: Save as `aoi_30km_contours_50m.shp`
+3. Click **Run**
+4. Repeat with interval = 10 for detailed contours
+
+## Step 5: Calculate Slope
+
+1. Go to **Raster → Analysis → Slope**
+2. Set parameters:
+   - **Input layer**: Your DEM
+   - **Output**: Save as `aoi_30km_slope.tif`
+3. Click **Run**
+
+## Step 6: Calculate Aspect
+
+1. Go to **Raster → Analysis → Aspect**
+2. Set parameters:
+   - **Input layer**: Your DEM
+   - **Output**: Save as `aoi_30km_aspect.tif`
+3. Click **Run**
+
+## Step 7: Enhance Visualization
+
+### Combine Hillshade with Elevation Colors:
+1. Make sure both DEM (colored) and Hillshade layers are loaded
+2. Right-click the **colored DEM layer** → **Properties**
+3. Go to **Symbology** tab
+4. Scroll down to **Layer rendering** section
+5. Set **Blending mode** to **"Multiply"** or **"Overlay"**
+6. Adjust **Opacity** to about 70%
+7. Click **OK**
+
+### Style Contour Lines:
+1. Right-click contour layer → **Properties**
+2. Go to **Symbology** tab
+3. Change color to brown or dark red
+4. Increase line width to 0.5-1.0
+5. Add labels showing elevation values
+
+## Tips for Better Visualization:
+
+- **Vertical Exaggeration**: For dramatic effect, use Z-factor > 1 in hillshade
+- **Multiple Light Sources**: Create hillshades with different azimuth angles
+- **Color Combinations**: Try different color ramps (Plasma, Viridis, Terrain)
+- **3D Visualization**: Use **View → 3D Map Views** for 3D terrain visualization
+
+## Output Files You'll Create:
+
+- `aoi_30km_hillshade.tif` - 3D-looking terrain
+- `aoi_30km_contours_50m.shp` - Elevation lines (50m intervals)
+- `aoi_30km_contours_10m.shp` - Detailed elevation lines (10m intervals)
+- `aoi_30km_slope.tif` - Slope analysis (steepness)
+- `aoi_30km_aspect.tif` - Aspect analysis (direction of slope)
+
+## Quick Automated Processing:
+
+If you prefer automated processing, use the Python script:
+
+1. In QGIS, go to **Plugins → Python Console**
+2. Copy and paste this command:
+
+```python
+exec(open(r'C:\Users\nupur professional\process_aoi_30km_dem.py').read())
+process_complete_dem()
+```
+
+This will automatically create all the visualizations and save them to `C:\Users\nupur professional\DEM_Outputs\`
